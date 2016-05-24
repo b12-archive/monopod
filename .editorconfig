@@ -1,0 +1,32 @@
+## Code formatting guidelines
+
+# More info: http://editorconfig.org
+
+root = true
+
+
+### General rules
+[*]
+
+# - Unicode
+charset = utf-8
+
+# - Unix-style line endings
+end_of_line = lf
+
+# - File ends with an EOL character
+insert_final_newline = true
+
+# - No trailing spaces
+trim_trailing_whitespace = true
+
+# - Two-space indentation
+indent_style = space
+indent_size = 2
+
+
+### Exceptions
+
+# - Markdown files have meaningful whitespace at the end of lines
+[*.md]
+trim_trailing_whitespace = false

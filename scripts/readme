@@ -1,0 +1,19 @@
+#! /usr/bin/env node
+
+const commanderToMarkdown = require('commander-to-markdown');
+const fs = require('fs');
+
+const options =
+  commanderToMarkdown(`${__dirname}/../bin/monopod`);
+
+const readmePath =
+  `${__dirname}/../Readme.md`;
+const currentReadme =
+  fs.readFileSync(readmePath, 'utf8');
+const newReadme =
+  currentReadme.replace(
+    /(<!-- @options start -->)[^]*(<!-- @options end -->)/,
+    `$1\n${options}$2`
+  );
+
+fs.writeFileSync(readmePath, newReadme);

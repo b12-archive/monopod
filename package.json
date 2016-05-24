@@ -1,0 +1,65 @@
+{
+  "scripts": {
+    "manpages": "scripts/manpages",
+    "prepublish": "npm run manpages",
+    "readme": "scripts/readme && git commit -m '[npm run readme] Update the docs' Readme.md",
+    "coverage": "rm -rf coverage && istanbul cover test.js",
+    "coveralls": "npm run coverage && cat coverage/lcov.info | coveralls",
+    "develop": "node-dev --respawn --no-notify --no-deps test.js",
+    "test": "eslint . && node test.js",
+    "reshrinkwrap": "rm -f npm-shrinkwrap.json && npm install && npm shrinkwrap --dev && git commit -m '[npm run shrinkwrap] Update dependencies' npm-shrinkwrap.json package.json"
+  },
+  "bin": {
+    "monopod": "bin/monopod"
+  },
+  "files": [
+    "/**/*.js",
+    "!/test.js",
+    "/Readme.md",
+    "/License.md",
+    "/bin/",
+    "/manpages/"
+  ],
+  "man": [
+    "/manpages/elm-live.1"
+  ],
+  "name": "monopod",
+  "version": "0.0.0",
+  "description": "Monorepo done simple",
+  "engines": {
+    "node": ">=4.0.0"
+  },
+  "dependencies": {
+    "commander": "^2.9.0",
+    "hasbin": "^1.2.2"
+  },
+  "devDependencies": {
+    "coveralls": "^2.11.9",
+    "eslint": "^2.10.2",
+    "eslint-config-airbnb-base": "^3.0.1",
+    "eslint-plugin-import": "^1.8.0",
+    "istanbul": "^0.4.3",
+    "marked-man": "^0.1.5",
+    "node-dev": "^3.1.1",
+    "npm": "^3.9.2",
+    "tap-spec-integrated": "^1.0.1",
+    "tape": "^4.5.1",
+    "tape-catch": "^1.0.5"
+  },
+  "license": "MIT",
+  "keywords": [
+    "command",
+    "cli",
+    "monorepo",
+    "scripts",
+    "automation"
+  ],
+  "author": "© undefined Studio B12 GmbH (http://studio-b12.de)",
+  "contributors": [
+    "Tomek Wiszniewski <t.wiszniewski@gmail.com>"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/studio-b12/${answers.name}.git"
+  }
+}

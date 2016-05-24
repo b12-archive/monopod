@@ -1,0 +1,37 @@
+#! /usr/bin/env node
+
+const commander = require('commander');
+const hasbinSync = require('hasbin').sync;
+const spawnSync = require('child_process').spawnSync;
+const resolve = require('path').resolve;
+const readFileSync = require('fs').readFileSync;
+const monopod = require('..');
+
+const options = {};
+
+const program = commander
+  // Parse options
+  .option('-h, --help',
+    'You’re looking at it.'
+  )
+  .parse(process.argv);
+
+// Custom `--help`
+if (program.hasOwnProperty('help')) {
+  const manpagePath =
+    resolve(__dirname, '../manpages/monopod.1');
+
+  if (hasbinSync('man')) {
+    const manProcess =
+      spawnSync('man', [manpagePath], { stdio: 'inherit' });
+    if (manProcess.error) throw manProcess.error;
+  } else {
+    process.stdout.write(
+      readFileSync(`${manpagePath}.txt`, 'utf8')
+    );
+  }
+
+  process.exit();
+}
+
+// TODO: Program logic

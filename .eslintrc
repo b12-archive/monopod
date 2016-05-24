@@ -1,0 +1,5 @@
+extends: airbnb-base
+
+rules:
+  max-len: [error, 80]
+  curly: [off] # https://github.com/airbnb/javascript/issues/445

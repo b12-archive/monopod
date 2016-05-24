@@ -1,0 +1,18 @@
+sudo:
+  false
+
+branches:
+  only:
+    - master
+
+language:
+  node_js
+node_js:
+  # We support the “active LTS” and “current” versions of node. If this file
+  # gets out of sync with the plan, please update it here
+  # and at https://github.com/studio-b12/boilerplate.
+  - '4.2'
+  - '6'
+
+after_script:
+  npm run coveralls
