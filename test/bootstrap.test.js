@@ -75,4 +75,29 @@ test('Fails gracefully when there is no `packages` dir', (is) => {
   is.end();
 });
 
+test((
+  'Fails gracefully when there is a `node_modules` directory in a package dir'
+), (is) => {
+  is.plan(1);
+  mockFs({ [projectPath]: {
+    'packages': {
+      'my-package': {
+        'node_modules': {},
+      },
+    },
+  } });
+
+  try {
+    bootstrap({ path: projectPath });
+  } catch (error) {
+    is.ok(
+      /the directory \S+\/node_modules/i.test(naked(error)),
+      'throws a helpful message'
+    );
+  }
+
+  mockFs.restore();
+  is.end();
+});
+
 test.skip('makes packages available to each other');

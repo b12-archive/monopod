@@ -21,12 +21,35 @@ const newError = (message) => tinyError(
 module.exports = (params) => {
   const path = params.path || process.cwd();
 
+  const packagesPath = `${path}/packages`;
   let packages;
   try {
-    packages = fs.readdirSync(`${path}/packages`);
+    packages = fs.readdirSync(packagesPath);
   } catch (error) {
     if (includes(['ENOENT', 'ENOTDIR'], error.code)) throw newError(
       `Make sure there’s a subdirectory ${b('packages')} in your project.`
     );
   }
+
+  packages.forEach((packageDir) => {
+    const packagePath = `${packagesPath}/${packageDir}`;
+    const nodeModulesPath = `${packagePath}/node_modules`;
+
+    let nodeModulesStats;
+    try {
+      nodeModulesStats = fs.lstatSync(nodeModulesPath);
+    } catch (error) {
+      if (error.code !== 'ENOENT') throw error;
+    }
+
+    if (nodeModulesStats && !nodeModulesStats.isSymbolicLink()) throw newError(
+      'Making sure we don’t overwrite any important stuff, ' +
+      `we’ve stumbled upon the ${
+        nodeModulesStats.isDirectory() ? 'directory' : 'file'
+      } ${b(nodeModulesPath)}. We don’t want to break things, so make sure ` +
+      `there’s nothing called ${b('node_modules')} ` +
+      `in any of your ${b('packages/*/')}. We’re fine if it’s a symlink, ` +
+      'by the way.'
+    );
+  });
 };
