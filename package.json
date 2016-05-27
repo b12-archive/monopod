@@ -21,7 +21,7 @@
     "/manpages/"
   ],
   "man": [
-    "/manpages/elm-live.1"
+    "/manpages/monopod.1"
   ],
   "name": "monopod",
   "version": "0.0.0",
@@ -61,12 +61,12 @@
     "scripts",
     "automation"
   ],
-  "author": "© undefined Studio B12 GmbH (http://studio-b12.de)",
+  "author": "© 2016 Studio B12 GmbH (http://studio-b12.de)",
   "contributors": [
     "Tomek Wiszniewski <t.wiszniewski@gmail.com>"
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/studio-b12/${answers.name}.git"
+    "url": "https://github.com/studio-b12/monopod.git"
   }
 }
