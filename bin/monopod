@@ -14,6 +14,7 @@ const program = commander
   .parse(process.argv);
 
 // Custom `--help`
+console.log(customHelp);
 customHelp({ program, binary: 'monopod' });
 
 // TODO: Program logic
