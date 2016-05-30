@@ -35,6 +35,14 @@ Remember to run `monopod bootstrap` after the initial `npm install` and every ti
 ## Options
 
 <!-- @options start -->
+#### `[path]`
+The path to your monorepo. Should contain a `packages` subdirectory. Default: `$(pwd)`.
+
+#### `-s, --scope`
+The npm scope of all packages in your monorepo. Default: `$(basename "$path")`.
+
+#### `-h, --help`
+You’re looking at it.
 <!-- @options end -->
 
 
