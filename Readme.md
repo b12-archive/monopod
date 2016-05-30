@@ -77,4 +77,4 @@ You’re looking at it.
 
 ## License
 
-[MIT](https://github.com/studio-b12/monopod/License.md) © [Studio B12](http://studio-b12.de)
+[MIT](https://git.io/monopod.License) © [Studio B12](http://studio-b12.de)
