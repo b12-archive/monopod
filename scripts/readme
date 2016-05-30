@@ -3,17 +3,32 @@
 const commanderToMarkdown = require('commander-to-markdown');
 const fs = require('fs');
 
-const options =
-  commanderToMarkdown(`${__dirname}/../bin/monopod`);
+[{
+  bin: 'monopod',
+  target: 'Readme.md',
+  logicModule: '..',
+}, {
+  bin: 'monopod-bootstrap',
+  target: 'Readme/bootstrap.md',
+  logicModule: '../bootstrap',
+}].forEach((params) => {
+  const bin = params.bin;
+  const target = params.target;
+  const logicModule = params.logicModule;
 
-const readmePath =
-  `${__dirname}/../Readme.md`;
-const currentReadme =
-  fs.readFileSync(readmePath, 'utf8');
-const newReadme =
-  currentReadme.replace(
-    /(<!-- @options start -->)[^]*(<!-- @options end -->)/,
-    `$1\n${options}$2`
+  const options = commanderToMarkdown(
+    `${__dirname}/../bin/${bin}`, { programModules: [logicModule] }
   );
 
-fs.writeFileSync(readmePath, newReadme);
+  const readmePath =
+    `${__dirname}/../${target}`;
+  const currentReadme =
+    fs.readFileSync(readmePath, 'utf8');
+  const newReadme =
+    currentReadme.replace(
+      /(<!-- @options start -->)[^]*(<!-- @options end -->)/,
+      `$1\n${options}$2`
+    );
+
+  fs.writeFileSync(readmePath, newReadme);
+});
