@@ -1,4 +1,10 @@
 {
+  "name": "monopod",
+  "version": "0.0.0",
+  "description": "Monorepo done simple",
+  "engines": {
+    "node": ">=4.0.0"
+  },
   "scripts": {
     "manpages": "scripts/manpages",
     "prepublish": "npm run manpages",
@@ -23,12 +29,6 @@
   "man": [
     "/manpages/monopod.1"
   ],
-  "name": "monopod",
-  "version": "0.0.0",
-  "description": "Monorepo done simple",
-  "engines": {
-    "node": ">=4.0.0"
-  },
   "dependencies": {
     "array-includes": "^3.0.2",
     "chalk": "^1.1.3",
