@@ -2,12 +2,12 @@
   "scripts": {
     "manpages": "scripts/manpages",
     "prepublish": "npm run manpages",
-    "readme": "scripts/readme && git commit -m '[npm run readme] Update the docs' Readme.md",
+    "readme": "scripts/readme && git commit -m \"[npm run readme] Update the docs\" Readme.md",
     "coverage": "rm -rf coverage && istanbul cover test.js",
     "coveralls": "npm run coverage && cat coverage/lcov.info | coveralls",
     "develop": "node-dev --respawn --no-notify --no-deps test.js",
     "test": "eslint . && node test.js",
-    "reshrinkwrap": "rm -f npm-shrinkwrap.json && npm install && npm shrinkwrap --dev && git commit -m '[npm run shrinkwrap] Update dependencies' npm-shrinkwrap.json package.json"
+    "reshrinkwrap": "rm -f npm-shrinkwrap.json && npm install && npm shrinkwrap --dev && git commit -m \"[npm run shrinkwrap] Update dependencies\" npm-shrinkwrap.json package.json"
   },
   "bin": {
     "monopod": "bin/monopod"
