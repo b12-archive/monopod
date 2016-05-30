@@ -31,8 +31,11 @@ module.exports = (params) => {
     );
   }
 
-  packages.forEach((packageDir) => {
-    const packagePath = `${packagesPath}/${packageDir}`;
+  const packagePaths = packages.map((packageDir) => (
+    `${packagesPath}/${packageDir}`
+  ));
+
+  packagePaths.forEach((packagePath) => {
     const nodeModulesPath = `${packagePath}/node_modules`;
 
     let nodeModulesStats;
@@ -51,5 +54,9 @@ module.exports = (params) => {
       `in any of your ${b('packages/*/')}. We’re fine if it’s a symlink, ` +
       'by the way.'
     );
+  });
+
+  packagePaths.forEach((packagePath) => {
+    fs.symlinkSync('../../node_modules', `${packagePath}/node_modules`, 'dir');
   });
 };

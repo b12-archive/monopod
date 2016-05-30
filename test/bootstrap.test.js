@@ -5,6 +5,7 @@
 const tape = require('tape-catch');
 const mockFs = require('mock-fs');
 const fs = require('fs');
+const path = require('path');
 const asObject = require('as/object');
 const stripAnsi = require('strip-ansi');
 
@@ -42,10 +43,13 @@ test('Makes global dependencies available to packages', (is) => {
       'creates symlinks at every `packages/*/node_modules`'
     );
 
-    const linkPaths = packageDepsDirs.map(dir => fs.readlinkSync(dir));
+    const linkTargets = packageDepsDirs.map(dir => fs.readlinkSync(dir));
     is.ok(
-      linkPaths.every(path => path === `${projectPath}/node_modules`),
-      'each symlink points at the root node_modules'
+      linkTargets.every(target => target === path.relative(
+        `${projectPath}/packages/my-package`,
+        `${projectPath}/node_modules`
+      )),
+      'each symlink is relative and points at the root node_modules'
     );
   } catch (error) {
     if (error.code !== 'ENOENT') throw error;
