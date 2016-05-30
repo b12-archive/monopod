@@ -16,7 +16,8 @@ const test = Object.assign(
   tape
 );
 const naked = error => stripAnsi(String(error));
-const projectPath = '/my/project';
+const projectName = 'my-project';
+const projectPath = `/path/to/${projectName}`;
 const packages = [
   'my-package',
   'another-package',
@@ -104,4 +105,88 @@ test((
   is.end();
 });
 
-test.skip('makes packages available to each other');
+test('Makes packages available to each other', (is) => {
+  is.plan(3);
+  mockFs({ [projectPath]: {
+    'packages': {},
+  } });
+
+  const scope = 'my-scope';
+  bootstrap({ path: projectPath, scope });
+
+  try {
+    const nodeModulesDir = `${projectPath}/node_modules`;
+    const nodeModules = fs.statSync(nodeModulesDir);
+    is.ok(
+      nodeModules.isDirectory(),
+      'creates `node_modules` if it doesn’t exist'
+    );
+
+    const linkDir = `${nodeModulesDir}/@${scope}`;
+    const link = fs.lstatSync(linkDir);
+    is.ok(
+      link.isSymbolicLink(),
+      'creates a symlink at `node_modules/@<scope>`'
+    );
+
+    const linkTarget = fs.readlinkSync(linkDir);
+    is.equal(
+      linkTarget,
+      `${projectPath}/packages`,
+      'the symlink is absolute and points at the `packages` directory'
+    );
+  } catch (error) {
+    if (error.code !== 'ENOENT') throw error;
+    is.fail(
+      'creates a file at `node_modules/@<scope>`'
+    );
+  }
+
+  mockFs.restore();
+  is.end();
+});
+
+test('Implies scope from directory name', (is) => {
+  is.plan(1);
+  mockFs({ [projectPath]: {
+    'packages': {},
+  } });
+
+  bootstrap({ path: projectPath });
+
+  try {
+    const link = fs.lstatSync(`${projectPath}/node_modules/@${projectName}`);
+    is.ok(
+      link.isSymbolicLink(),
+      'creates a symlink at `node_modules/@<project directory name>`'
+    );
+  } catch (error) {
+    if (error.code !== 'ENOENT') throw error;
+    is.fail(
+      'creates a file at `node_modules/@<scope>`'
+    );
+  }
+
+  mockFs.restore();
+  is.end();
+});
+
+test('Fails gracefully if `node_modules` is a non-directory', (is) => {
+  is.plan(1);
+  mockFs({ [projectPath]: {
+    'node_modules': 'whatever',
+    'packages': {},
+  } });
+
+  try {
+    bootstrap({ path: projectPath });
+  } catch (error) {
+    is.ok(
+      /make sure [^\s]*node_modules is a directory/i.test(naked(error)),
+      'throws a helpful message'
+    );
+  }
+
+  mockFs.restore();
+  is.end();
+});
