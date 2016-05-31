@@ -2,16 +2,17 @@
 
 const commanderToMarkdown = require('commander-to-markdown');
 const fs = require('fs');
+const commands = require('../_/commands');
 
 [{
   bin: 'monopod',
   target: 'Readme.md',
   logicModule: '..',
-}, {
-  bin: 'monopod-bootstrap',
-  target: 'Readme/bootstrap.md',
-  logicModule: '../bootstrap',
-}].forEach((params) => {
+}].concat(commands.map(command => ({
+  bin: `commands/${command}`,
+  target: `Readme/${command}.md`,
+  logicModule: `../../${command}`,
+}))).forEach((params) => {
   const bin = params.bin;
   const target = params.target;
   const logicModule = params.logicModule;

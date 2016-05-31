@@ -3,6 +3,7 @@
 const commander = require('commander');
 const customHelp = require('./_/customHelp');
 const spawnSync = require('child_process').spawnSync;
+const commands = require('../_/commands');
 
 const codify = string => `\`${string}\``;
 
@@ -10,14 +11,11 @@ const program = commander
 
   // Command
   .arguments('<command>',
-    `Available commands: ${[
-      'bootstrap',
-      'debootstrap',
-    ].map(codify).join(', ')}.`
+    `Available commands: ${commands.map(codify).join(', ')}.`
   )
   .action((command) => {
     spawnSync(
-      `${__dirname}/monopod-${command}`,
+      `${__dirname}/commands/${command}`,
       process.argv.slice(3),
       { stdio: 'inherit' }
     );

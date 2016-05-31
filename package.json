@@ -16,8 +16,7 @@
     "reshrinkwrap": "rm -f npm-shrinkwrap.json && npm install && npm shrinkwrap --dev && git commit -m \"[npm run shrinkwrap] Update dependencies\" npm-shrinkwrap.json package.json"
   },
   "bin": {
-    "monopod": "bin/monopod",
-    "monopod-bootstrap": "bin/monopod-bootstrap"
+    "monopod": "bin/monopod"
   },
   "files": [
     "/**/*.js",

@@ -1,0 +1,6 @@
+#! /usr/bin/env node
+
+const bootstrapBinary = require('../_/bootstrapBinary');
+const bootstrap = require('../../bootstrap');
+
+bootstrapBinary({ logicModule: bootstrap, manpage: 'monopod-bootstrap' });
