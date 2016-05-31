@@ -5,7 +5,6 @@ const fs = require('fs');
 const pathModule = require('path');
 const chalk = require('chalk');
 const b = chalk.bold;
-const mkdirp = require('mkdirp');
 const newError = require('./_/newError');
 const packagePaths = require('./_/packagePaths');
 
