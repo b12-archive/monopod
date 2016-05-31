@@ -1,3 +1,7 @@
+master:
+  fixed bugs:
+    - Took outdated badge off the readme.
+
 1.0.0:
   date: 2016-05-31
   note: Initial release
