@@ -1,10 +1,8 @@
 const customHelp = require('./customHelp');
 
-const commander = require('commander');
-
 module.exports = (params) => {
   const options = {};
-  const program = commander
+  const program = params.commander
 
     // Populate the `path`
     .arguments('[path]',
