@@ -68,6 +68,9 @@ monopod --help
 ## Options
 
 <!-- @options start -->
+#### `<command>`
+Available commands: `bootstrap`, `debootstrap`.
+
 #### `-h, --help`
 You’re looking at it.
 <!-- @options end -->
