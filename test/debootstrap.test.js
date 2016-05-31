@@ -29,11 +29,12 @@ const packagePath =
 
 test('Removes the `node_modules/@<scope>` symlink', (is) => {
   is.plan(1);
-  mockFs({
-    [projectNodeModulesPath]: {
+  mockFs({ [path]: {
+    'node_modules': {
       [scopeDirName]: mockSymlink,
     },
-  });
+    'packages': {},
+  } });
 
   debootstrap({ path, scope });
 
