@@ -58,7 +58,27 @@ monopod --help
 
 ## Description
 
-*Work in progress…*
+`monopod` manages an npm monorepo for you. To make it as simple as gets, we’re following a couple of principles:
+
+- **No magic behind the scenes.**  
+  In case of an emergency, you can easily set things up by hand.
+
+- **All packages live in directories under `packages/<package name>`.**  
+  It can’t get any simpler.
+
+- **All packages have the same [npm scope](https://docs.npmjs.com/misc/scope).**  
+  This helps make sure packages can `require` one another with very little overhead. Good news though! It’s okay to omit the scope in a top-level package.
+
+- **External dependencies are synchronized across packages.**  
+  This helps keep the project slim and the install blazing fast. Tried and tested in the UNIX ecosystem.
+
+- **Every package is [semver](http://semver.org/)-compliant.**  
+  We use [yankee](https://git.io/yankee) to prepare each release – make sure every package has a `Changelog.yaml`.
+
+
+### Curious for more?
+
+`monopod` is very simple, so you can easily understand all that happens. A quick glance at [`monopod bootstrap --help`](./Readme/bootstrap) will give you a good grasp.
 
 
 
