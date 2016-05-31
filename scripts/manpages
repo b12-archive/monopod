@@ -4,8 +4,9 @@ mkdir -p manpages
 rm -rf manpages/*
 
 manpages="\
-  Readme.md             monopod
-  Readme/bootstrap.md   monopod-bootstrap\
+  Readme.md               monopod
+  Readme/bootstrap.md     monopod-bootstrap
+  Readme/debootstrap.md   monopod-debootstrap\
 "
 
 IFS=$'\n'
