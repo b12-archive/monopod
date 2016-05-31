@@ -3,11 +3,11 @@
 
 const fs = require('fs');
 const pathModule = require('path');
-const includes = require('array-includes');
 const chalk = require('chalk');
 const b = chalk.bold;
 const mkdirp = require('mkdirp');
 const newError = require('./_/newError');
+const packagePaths$ = require('./_/packagePaths');
 
 /*                                                            (see git.io/rtype)
   ({
@@ -23,21 +23,7 @@ module.exports = (params) => {
   const path = params.path || process.cwd();
   const scope = params.scope || pathModule.basename(path);
 
-  // Check for `packages`
-  const packagesPath = `${path}/packages`;
-  let packages;
-  try {
-    packages = fs.readdirSync(packagesPath);
-  } catch (error) {
-    if (!includes(['ENOENT', 'ENOTDIR'], error.code)) throw error;
-    throw newError(
-      `Make sure there’s a subdirectory ${b('packages')} in your project.`
-    );
-  }
-
-  const packagePaths = packages.map((packageDir) => (
-    `${packagesPath}/${packageDir}`
-  ));
+  const packagePaths = packagePaths$(path);
 
   // Check for `packages/*`
   packagePaths.forEach((packagePath) => {
@@ -77,7 +63,7 @@ module.exports = (params) => {
     if (error.code !== 'ENOENT') throw error;
     mkdirp.sync(nodeModulesPath);
   }
-  fs.symlinkSync(packagesPath, symlinkPath);
+  fs.symlinkSync(`${path}/packages`, symlinkPath);
 
   // Hook up `node_modules` on each package
   packagePaths.forEach((packagePath) => {

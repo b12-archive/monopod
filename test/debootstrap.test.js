@@ -10,6 +10,8 @@ const asObject = require('as/object');
 const includes = require('array-includes');
 const naked = require('./_/naked');
 
+const requiresPackagesDir = require('./reusable/requiresPackagesDir');
+
 const debootstrap = require('../debootstrap');
 
 const projectName = 'my-project';
@@ -91,6 +93,8 @@ test('Removes `packages/*/node_modules` symlinks', (is) => {
   mockFs.restore();
   is.end();
 });
+
+requiresPackagesDir({ test, path, logicModule: debootstrap });
 
 test((
   'Fails gracefully if any `packages/*/node_modules` isn’t a symlink'
