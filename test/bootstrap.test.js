@@ -2,20 +2,16 @@
   // Quoting all properties in a mock file tree looks much more elegant
   // than quoting only some.
 
-const tape = require('tape-catch');
+const test$ = require('./_/test');
+const test = test$('bootstrap');
 const mockFs = require('mock-fs');
 const fs = require('fs');
 const path = require('path');
 const asObject = require('as/object');
-const stripAnsi = require('strip-ansi');
+const naked = require('./_/naked');
 
 const bootstrap = require('../bootstrap');
 
-const test = Object.assign(
-  (message, callback) => tape(`bootstrap: ${message}`, callback),
-  tape
-);
-const naked = error => stripAnsi(String(error));
 const projectName = 'my-project';
 const projectPath = `/path/to/${projectName}`;
 const packages = [
