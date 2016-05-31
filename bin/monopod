@@ -4,9 +4,6 @@ const commander = require('commander');
 const customHelp = require('./_/customHelp');
 const bold = require('chalk').bold;
 const spawnSync = require('child_process').spawnSync;
-// const monopod = require('..');
-//
-// const options = {};
 
 const program = commander
 
@@ -31,5 +28,3 @@ const program = commander
 
 // Custom `--help`
 customHelp({ program, binary: 'monopod' });
-
-// TODO: Program logic
