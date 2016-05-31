@@ -1,6 +1,6 @@
 #! /usr/bin/env node
 
 const bootstrapBinary = require('./_/bootstrapBinary');
-const bootstrap = require('../bootstrap');
+const debootstrap = require('../debootstrap');
 
-bootstrapBinary(bootstrap);
+bootstrapBinary(debootstrap);
