@@ -2,7 +2,7 @@ const customHelp = require('./customHelp');
 
 const commander = require('commander');
 
-module.exports = (logicModule) => {
+module.exports = (params) => {
   const options = {};
   const program = commander
 
@@ -26,7 +26,7 @@ module.exports = (logicModule) => {
     .parse(process.argv);
 
   // Custom `--help`
-  customHelp({ program, binary: 'monopod-bootstrap' });
+  customHelp({ program, manpage: params.manpage });
 
-  logicModule(options);
+  params.logicModule(options);
 };

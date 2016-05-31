@@ -4,12 +4,9 @@ const resolve = require('path').resolve;
 const readFileSync = require('fs').readFileSync;
 
 module.exports = (params) => {
-  const program = params.program;
-  const binary = params.binary;
-
-  if (program.hasOwnProperty('help')) {
+  if (params.program.hasOwnProperty('help')) {
     const manpagePath =
-      resolve(__dirname, `../../manpages/${binary}.1`);
+      resolve(__dirname, `../../manpages/${params.manpage}.1`);
 
     if (hasbinSync('man')) {
       const manProcess =

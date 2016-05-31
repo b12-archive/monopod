@@ -3,4 +3,4 @@
 const bootstrapBinary = require('./_/bootstrapBinary');
 const debootstrap = require('../debootstrap');
 
-bootstrapBinary(debootstrap);
+bootstrapBinary({ logicModule: debootstrap, manpage: 'monopod-debootstrap' });
