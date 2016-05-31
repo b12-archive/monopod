@@ -9,7 +9,7 @@ module.exports = (params) => {
 
   if (program.hasOwnProperty('help')) {
     const manpagePath =
-      resolve(__dirname, `../manpages/${binary}.1`);
+      resolve(__dirname, `../../manpages/${binary}.1`);
 
     if (hasbinSync('man')) {
       const manProcess =
