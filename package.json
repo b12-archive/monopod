@@ -1,6 +1,6 @@
 {
   "name": "monopod",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Monorepo done simple",
   "engines": {
     "node": ">=4.0.0"
