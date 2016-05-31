@@ -8,6 +8,7 @@ const mockFs = require('mock-fs');
 const fs = require('fs');
 const asObject = require('as/object');
 const includes = require('array-includes');
+const naked = require('./_/naked');
 
 const debootstrap = require('../debootstrap');
 
@@ -17,22 +18,25 @@ const packages = [
   'my-package',
   'another-package',
 ];
+const scope = 'my-scope';
+const scopeDirName = `@${scope}`;
+const projectNodeModulesPath = `${path}/node_modules`;
+const mockSymlink = mockFs.symlink({ path: 'whatever' });
+const packagePath =
+  name => `${path}/packages/${name}`;
 
 test('Removes the `node_modules/@<scope>` symlink', (is) => {
   is.plan(1);
-  const scope = 'my-scope';
-  const scopeDirName = `@${scope}`;
-  const nodeModulesPath = `${path}/node_modules`;
   mockFs({
-    [nodeModulesPath]: {
-      [scopeDirName]: mockFs.symlink({ path: 'whatever' }),
+    [projectNodeModulesPath]: {
+      [scopeDirName]: mockSymlink,
     },
   });
 
   debootstrap({ path, scope });
 
   is.ok(
-    !includes(fs.readdirSync(nodeModulesPath), scopeDirName),
+    !includes(fs.readdirSync(projectNodeModulesPath), scopeDirName),
     'removes the symlink at `node_modules/@<scope>`'
   );
 
@@ -40,9 +44,26 @@ test('Removes the `node_modules/@<scope>` symlink', (is) => {
   is.end();
 });
 
-test.skip((
+test((
   'Fails gracefully if `node_modules/@<scope>` is not a symlink'
 ), (is) => {
+  is.plan(1);
+  mockFs({
+    [projectNodeModulesPath]: {
+      [scopeDirName]: {},
+    },
+  });
+
+  try {
+    debootstrap({ path, scope });
+  } catch (error) {
+    is.ok(
+      /remove it by hand/i.test(naked(error)),
+      'throws a helpful error'
+    );
+  }
+
+  mockFs.restore();
   is.end();
 });
 
@@ -51,16 +72,14 @@ test('Removes `packages/*/node_modules` symlinks', (is) => {
     'packages': asObject(packages.map(name => ({
       key: name,
       value: {
-        'node_modules': mockFs.symlink({ path: 'whatever' }),
+        'node_modules': mockSymlink,
       },
     }))),
   } });
 
   debootstrap({ path });
 
-  const packagePaths = packages.map((name) => (
-    `${path}/packages/${name}`
-  ));
+  const packagePaths = packages.map(packagePath);
 
   is.ok(
     packagePaths.every((depsPath) => (
@@ -73,8 +92,40 @@ test('Removes `packages/*/node_modules` symlinks', (is) => {
   is.end();
 });
 
-test.skip((
-  'Fails gracefully if `packages/*/node_modules` aren’t symlinks'
+test((
+  'Fails gracefully if any `packages/*/node_modules` isn’t a symlink'
 ), (is) => {
+  is.plan(2);
+  const symlinkedPackage = packages[0];
+  mockFs({
+    [packagePath(symlinkedPackage)]: { 'node_modules': mockSymlink },
+    [packagePath(packages[1])]: { 'node_modules': {} },
+  });
+
+  try {
+    debootstrap({ path });
+  } catch (error) {
+    is.ok(
+      /remove it by hand/i.test(naked(error)),
+      'throws a helpful error'
+    );
+  }
+
+  try {
+    const nodeModulesSymlink = fs.lstatSync(
+      `${packagePath(symlinkedPackage)}/node_modules`
+    );
+    is.ok(
+      nodeModulesSymlink.isSymbolicLink(),
+      'leaves all symlinks intact'
+    );
+  } catch (error) {
+    if (error.code !== 'ENOENT') throw error;
+    is.fail(
+      'doesn’t remove other files'
+    );
+  }
+
+  mockFs.restore();
   is.end();
 });
