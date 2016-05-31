@@ -38,7 +38,6 @@ module.exports = (params) => {
     if (!symlink.isSymbolicLink()) throw symlinkError(scopeSymlinkPath);
   } catch (error) {
     if (error.code !== 'ENOENT') throw error;
-    mkdirp.sync(nodeModulesPath);
   }
 
   // Check if package dep symlinks are safe to remove
@@ -57,7 +56,11 @@ module.exports = (params) => {
   });
 
   // Remove scope symlink
-  fs.unlinkSync(scopeSymlinkPath);
+  try {
+    fs.unlinkSync(scopeSymlinkPath);
+  } catch (error) {
+    if (error.code !== 'ENOENT') throw error;
+  }
 
   // Remove package deps symlinks
   packageDepsSymlinkPaths.forEach(symlinkPath => fs.unlinkSync(symlinkPath));
