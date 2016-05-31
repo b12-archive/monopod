@@ -6,21 +6,23 @@ const test$ = require('./_/test');
 const test = test$('bootstrap');
 const mockFs = require('mock-fs');
 const fs = require('fs');
-const path = require('path');
+const relative = require('path').relative;
 const asObject = require('as/object');
 const naked = require('./_/naked');
+
+const requiresPackagesDir = require('./reusable/requiresPackagesDir');
 
 const bootstrap = require('../bootstrap');
 
 const projectName = 'my-project';
-const projectPath = `/path/to/${projectName}`;
+const path = `/path/to/${projectName}`;
 const packages = [
   'my-package',
   'another-package',
 ];
 
 test('Makes global dependencies available to packages', (is) => {
-  mockFs({ [projectPath]: {
+  mockFs({ [path]: {
     'node_modules': {},
     'packages': asObject(packages.map(name => ({
       key: name,
@@ -28,10 +30,10 @@ test('Makes global dependencies available to packages', (is) => {
     }))),
   } });
 
-  bootstrap({ path: projectPath });
+  bootstrap({ path });
 
   const packageDepsDirs = packages.map((name) => (
-    `${projectPath}/packages/${name}/node_modules`
+    `${path}/packages/${name}/node_modules`
   ));
   try {
     const links = packageDepsDirs.map(dir => fs.lstatSync(dir));
@@ -42,9 +44,9 @@ test('Makes global dependencies available to packages', (is) => {
 
     const linkTargets = packageDepsDirs.map(dir => fs.readlinkSync(dir));
     is.ok(
-      linkTargets.every(target => target === path.relative(
-        `${projectPath}/packages/my-package`,
-        `${projectPath}/node_modules`
+      linkTargets.every(target => target === relative(
+        `${path}/packages/my-package`,
+        `${path}/node_modules`
       )),
       'each symlink is relative and points at the root node_modules'
     );
@@ -59,28 +61,13 @@ test('Makes global dependencies available to packages', (is) => {
   is.end();
 });
 
-test('Fails gracefully when there is no `packages` dir', (is) => {
-  is.plan(1);
-  mockFs({ [projectPath]: {} });
-
-  try {
-    bootstrap({ path: projectPath });
-  } catch (error) {
-    is.ok(
-      /a subdirectory packages/i.test(naked(error)),
-      'throws a helpful message'
-    );
-  }
-
-  mockFs.restore();
-  is.end();
-});
+requiresPackagesDir({ test, path, logicModule: bootstrap });
 
 test((
   'Fails gracefully when there is a `node_modules` directory in a package dir'
 ), (is) => {
   is.plan(1);
-  mockFs({ [projectPath]: {
+  mockFs({ [path]: {
     'packages': {
       'my-package': {
         'node_modules': {},
@@ -89,7 +76,7 @@ test((
   } });
 
   try {
-    bootstrap({ path: projectPath });
+    bootstrap({ path });
   } catch (error) {
     is.ok(
       /the directory \S+\/node_modules/i.test(naked(error)),
@@ -103,15 +90,15 @@ test((
 
 test('Makes packages available to each other', (is) => {
   is.plan(3);
-  mockFs({ [projectPath]: {
+  mockFs({ [path]: {
     'packages': {},
   } });
 
   const scope = 'my-scope';
-  bootstrap({ path: projectPath, scope });
+  bootstrap({ path, scope });
 
   try {
-    const nodeModulesDir = `${projectPath}/node_modules`;
+    const nodeModulesDir = `${path}/node_modules`;
     const nodeModules = fs.statSync(nodeModulesDir);
     is.ok(
       nodeModules.isDirectory(),
@@ -128,7 +115,7 @@ test('Makes packages available to each other', (is) => {
     const linkTarget = fs.readlinkSync(linkDir);
     is.equal(
       linkTarget,
-      `${projectPath}/packages`,
+      `${path}/packages`,
       'the symlink is absolute and points at the `packages` directory'
     );
   } catch (error) {
@@ -144,14 +131,14 @@ test('Makes packages available to each other', (is) => {
 
 test('Implies scope from directory name', (is) => {
   is.plan(1);
-  mockFs({ [projectPath]: {
+  mockFs({ [path]: {
     'packages': {},
   } });
 
-  bootstrap({ path: projectPath });
+  bootstrap({ path });
 
   try {
-    const link = fs.lstatSync(`${projectPath}/node_modules/@${projectName}`);
+    const link = fs.lstatSync(`${path}/node_modules/@${projectName}`);
     is.ok(
       link.isSymbolicLink(),
       'creates a symlink at `node_modules/@<project directory name>`'
@@ -169,13 +156,13 @@ test('Implies scope from directory name', (is) => {
 
 test('Fails gracefully if `node_modules` is a non-directory', (is) => {
   is.plan(1);
-  mockFs({ [projectPath]: {
+  mockFs({ [path]: {
     'node_modules': 'whatever',
     'packages': {},
   } });
 
   try {
-    bootstrap({ path: projectPath });
+    bootstrap({ path });
   } catch (error) {
     is.ok(
       /make sure [^\s]*node_modules is a directory/i.test(naked(error)),
