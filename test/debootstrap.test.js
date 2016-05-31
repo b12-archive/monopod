@@ -20,20 +20,13 @@ const packages = [
   'my-package',
   'another-package',
 ];
+const symlinkedPackage = packages[0];
 const scope = 'my-scope';
 const scopeDirName = `@${scope}`;
 const projectNodeModulesPath = `${path}/node_modules`;
 const mockSymlink = mockFs.symlink({ path: 'whatever' });
 const packagePath =
   name => `${path}/packages/${name}`;
-const treeWithPackages = { [path]: {
-  'packages': asObject(packages.map(name => ({
-    key: name,
-    value: {
-      'node_modules': mockSymlink,
-    },
-  }))),
-} };
 
 test('Removes the `node_modules/@<scope>` symlink', (is) => {
   is.plan(1);
@@ -82,7 +75,10 @@ test((
   'Doesn’t care if `node_modules/@<scope>` doesn’t exist'
 ), (is) => {
   is.plan(1);
-  mockFs(treeWithPackages);
+  mockFs(asObject(packages.map((packageName) => ({
+    key: `${packagePath(packageName)}/node_modules`,
+    value: mockSymlink,
+  }))));
 
   try {
     debootstrap({ path, scope });
@@ -101,7 +97,10 @@ test((
 });
 
 test('Removes `packages/*/node_modules` symlinks', (is) => {
-  mockFs(treeWithPackages);
+  mockFs({
+    [packagePath(symlinkedPackage)]: { 'node_modules': mockSymlink },
+    [packagePath(packages[1])]: {},
+  });
 
   debootstrap({ path });
 
@@ -124,7 +123,6 @@ test((
   'Fails gracefully if any `packages/*/node_modules` isn’t a symlink'
 ), (is) => {
   is.plan(2);
-  const symlinkedPackage = packages[0];
   mockFs({
     [packagePath(symlinkedPackage)]: { 'node_modules': mockSymlink },
     [packagePath(packages[1])]: { 'node_modules': {} },
