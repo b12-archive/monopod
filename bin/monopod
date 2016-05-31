@@ -2,14 +2,18 @@
 
 const commander = require('commander');
 const customHelp = require('./_/customHelp');
-const bold = require('chalk').bold;
 const spawnSync = require('child_process').spawnSync;
+
+const codify = string => `\`${string}\``;
 
 const program = commander
 
   // Command
   .arguments('<command>',
-    `Available commands: ${['bootstrap'].map(bold).join(', ')}.`
+    `Available commands: ${[
+      'bootstrap',
+      'debootstrap',
+    ].map(codify).join(', ')}.`
   )
   .action((command) => {
     spawnSync(
