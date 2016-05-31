@@ -33,7 +33,8 @@ module.exports = (params) => {
   try {
     packages = fs.readdirSync(packagesPath);
   } catch (error) {
-    if (includes(['ENOENT', 'ENOTDIR'], error.code)) throw newError(
+    if (!includes(['ENOENT', 'ENOTDIR'], error.code)) throw error;
+    throw newError(
       `Make sure there’s a subdirectory ${b('packages')} in your project.`
     );
   }
