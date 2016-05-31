@@ -46,7 +46,9 @@ npm install --save-dev monopod
 ## Synopsis
 
 ```sh
-monopod [--help]
+monopod <command> [...<command options>]  
+monopod <command> --help  
+monopod --help  
 ```
 
 

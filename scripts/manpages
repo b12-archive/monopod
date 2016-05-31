@@ -3,33 +3,44 @@
 mkdir -p manpages
 rm -rf manpages/*
 
-# 1. Render the manpage
-#   * Strip everything before the title
-#   * Make the title marked-man-friendly
-#   * Convert titles to UPPERCASE
-#   * Strip the INSTALLATION guide (whoever is reading the manpage,
-#     has it installed already)
-#   * Strip HTML tags
-#   * Strip HTML comments
-#   * Make sure the SYNOPSIS doesn’t look shitty
-#   * Render
-cat Readme.md \
-  | perl -0777 -pe 's/^[\S\s]*?\n(# )/$1/' \
-  | perl -0777 -pe 's/(^# [^\s]+)\n\n\*\*(.+)\*\*/$1(1) -- $2/' \
-  | perl -0777 -pe 's/(\n## .+\n)/\U$1/g' \
-  | perl -0777 -pe 's/\n## INSTALLATION[\S\s]*?(?=\n## )//' \
-  | perl -0777 -pe 's/<\/?(?:a|p|img)\b[\S\s]*?>//g' \
-  | perl -0777 -pe 's/<!--[\S\s]*?-->//g' \
-  | perl -0777 -pe 's/```sh\n([\S\s]*?\n)```\n/$1/' \
-  | marked-man \
-    --version=v$(node -p 'require("./package.json").version') \
-  > manpages/monopod.1
+manpages="\
+  Readme.md             monopod
+  Readme/bootstrap.md   monopod-bootstrap\
+"
 
-# 2. Render the plain-text fallback
-#   * Limit line width to 80 chars
-#   * Render with man
-#   * Collapse consecutive blank lines (matches default behavior)
-MANWIDTH=80 \
-man manpages/monopod.1 \
-  | perl -0777 -pe 's/\n{2,}/\n\n/g' \
-  > manpages/monopod.1.txt
+IFS=$'\n'
+for params in $manpages; do
+  file="$(echo "$params" | awk '{ print $1 }')"
+  manpage="$(echo "$params" | awk '{ print $2 }')"
+
+  # 1. Render the manpage
+  #   * Strip everything before the title
+  #   * Make the title marked-man-friendly
+  #   * Convert titles to UPPERCASE
+  #   * Strip the INSTALLATION guide (whoever is reading the manpage,
+  #     has it installed already)
+  #   * Strip HTML tags
+  #   * Strip HTML comments
+  #   * Make sure the SYNOPSIS doesn’t look shitty
+  #   * Render
+  cat "$file" \
+    | perl -0777 -pe 's/^[\S\s]*?\n(# )/$1/' \
+    | perl -0777 -pe 's/(^# [^\s]+)\n\n\*\*(.+)\*\*/$1(1) -- $2/' \
+    | perl -0777 -pe 's/(\n## .+\n)/\U$1/g' \
+    | perl -0777 -pe 's/\n## INSTALLATION[\S\s]*?(?=\n## )//' \
+    | perl -0777 -pe 's/<\/?(?:a|p|img)\b[\S\s]*?>//g' \
+    | perl -0777 -pe 's/<!--[\S\s]*?-->//g' \
+    | perl -0777 -pe 's/```sh\n([\S\s]*?\n)```\n/$1/' \
+    | marked-man \
+      --version=v$(node -p 'require("./package.json").version') \
+    > manpages/"$manpage".1
+
+  # 2. Render the plain-text fallback
+  #   * Limit line width to 80 chars
+  #   * Render with man
+  #   * Collapse consecutive blank lines (matches default behavior)
+  MANWIDTH=80 \
+  man manpages/"$manpage".1 \
+    | perl -0777 -pe 's/\n{2,}/\n\n/g' \
+    > manpages/"$manpage".1.txt
+done

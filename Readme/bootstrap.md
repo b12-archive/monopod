@@ -1,6 +1,6 @@
 <a id="/"></a>&nbsp;
 
-# monopod bootstrap
+# monopod-bootstrap
 
 **Wire up your monorepo**
 
@@ -12,8 +12,8 @@
 ## Synopsis
 
 ```sh
-monopod bootstrap [--scope=<scope>] [<path>]
-monopod bootstrap --help
+monopod bootstrap [--scope=<scope>] [<path>]  
+monopod bootstrap --help  
 ```
 
 
