@@ -3,15 +3,11 @@
 
 const fs = require('fs');
 const pathModule = require('path');
-const tinyError = require('tiny-error');
 const includes = require('array-includes');
 const chalk = require('chalk');
 const b = chalk.bold;
 const mkdirp = require('mkdirp');
-
-const newError = (message) => tinyError(
-  `Oops! Things didn’t quite work as we wanted. ${message}`
-);
+const newError = require('./_/newError');
 
 /*                                                            (see git.io/rtype)
   ({
