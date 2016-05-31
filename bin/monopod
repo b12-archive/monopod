@@ -2,11 +2,27 @@
 
 const commander = require('commander');
 const customHelp = require('./_/customHelp');
+const bold = require('chalk').bold;
+const spawnSync = require('child_process').spawnSync;
 // const monopod = require('..');
 //
 // const options = {};
 
 const program = commander
+
+  // Command
+  .arguments('<command>',
+    `Available commands: ${['bootstrap'].map(bold).join(', ')}.`
+  )
+  .action((command) => {
+    spawnSync(
+      `${__dirname}/monopod-${command}`,
+      process.argv.slice(3),
+      { stdio: 'inherit' }
+    );
+    process.exit();
+  })
+
   // Parse options
   .option('-h, --help',
     'You’re looking at it.'
