@@ -75,7 +75,7 @@ monopod --help
 
 ### Curious for more?
 
-`monopod` is very simple, so you can easily understand all that happens. A quick glance at [`monopod bootstrap --help`](./Readme/bootstrap) will give you a good grasp.
+`monopod` is very simple, so you can easily understand all that happens. A quick glance at [`monopod bootstrap --help`](./Readme/bootstrap.md) will give you a good grasp.
 
 
 
